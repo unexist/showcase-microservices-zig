@@ -5,3 +5,5 @@ This project holds a showcase for Zig related things.
 == todo-service-zig
 
 Small implementation based on Zap, 3-Layer and DI (Dependency Inversion + Dependency Injection)
+
+- https://medium.com/@shyamsundarb/blazingly-fast-web-services-with-zig-lang-using-the-zap-library-d64cf9e6129b
