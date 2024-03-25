@@ -1,0 +1,11 @@
+.{
+    .name = "todo-service-zap",
+    .version = "0.0.1",
+
+    .dependencies = .{
+        .zap = .{
+            .url = "https://github.com/zigzap/zap/archive/refs/tags/v0.6.0.tar.gz",
+            .hash = "1220a5a1e6b18fa384d8a98e5d5a25720ddadbcfed01da2e4ca55c7cfb3dc1caa62a",
+        },
+    },
+}
