@@ -1,0 +1,7 @@
+= Showcase for microservices on Zig
+
+This project holds a showcase for Zig related things.
+
+== todo-service-zig
+
+Small implementation based on Zap, 3-Layer and DI (Dependency Inversion + Dependency Injection)
