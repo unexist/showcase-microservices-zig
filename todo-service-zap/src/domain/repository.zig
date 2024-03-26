@@ -9,23 +9,23 @@
 // See the file LICENSE for details.
 //
 
-const Todos = @import("todo.zig");
+const todo = @import("todo.zig");
 
 const Repository = struct {
     // Open connection to database                                                                                                                                                                                                                                                                                [2/1876]
     open: fn (*Repository, []const u8) void,
 
     // Get all todos stored by this repository
-    getTodos: fn (*Repository, ?[]Todo) void,
+    getTodos: fn (*Repository, ?[]todo.Todo) void,
 
     // Create new todo based on given values
-    createTodo: fn (*Repository, ?Todo) void,
+    createTodo: fn (*Repository, ?todo.Todo) void,
 
     // Get todo entry with given id
-    getTodo: fn (*Repository, usize) ?Todo,
+    getTodo: fn (*Repository, usize) ?todo.Todo,
 
     // Update todo entry with given id
-    updateTodo: fn (*Repository, ?Todo) void,
+    updateTodo: fn (*Repository, ?todo.Todo) void,
 
     // Delete todo entry with given id
     deleteTodo: fn (*Repository, usize) void,
