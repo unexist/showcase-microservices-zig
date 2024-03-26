@@ -68,10 +68,11 @@ pub fn add(self: *Self, title: ?[]const u8, description: ?[]const u8) !usize {
 
     if (self.todos.put(todo.id, todo)) {
         self.count += 1;
+
         return todo.id;
     } else |err| {
         std.debug.print("add error: {}\n", .{err});
-        // make sure we pass on the error
+
         return err;
     }
 }
@@ -85,11 +86,12 @@ pub fn delete(self: *Self, id: usize) bool {
     if (ret) {
         self.count -= 1;
     }
+
     return ret;
 }
 
 pub fn get(self: *Self, id: usize) ?Todo {
-    // we don't care about locking here, as our usage-pattern is unlikely to
+    // We don't care about locking here, as our usage-pattern is unlikely to
     // get a todo by id that is not known yet
     if (self.todos.getPtr(id)) |pTodo| {
         return .{
@@ -99,20 +101,17 @@ pub fn get(self: *Self, id: usize) ?Todo {
         };
     }
     std.debug.print("Else part, didnt get todo pointer.\n", .{});
+
     return null;
 }
 
-pub fn update(
-    self: *Self,
-    id: usize,
-    first: ?[]const u8,
-    last: ?[]const u8,
-) bool {
+pub fn update(self: *Self, id: usize, first: ?[]const u8, last: ?[]const u8) bool {
     // we don't care about locking here
     // we update in-place, via getPtr
     if (self.todos.getPtr(id)) |pTodo| {
         pTodo.titlelen = 0;
         pTodo.descriptionlen = 0;
+
         if (first) |title| {
             @memcpy(pTodo.titlebuf[0..(title.len)], title);
             pTodo.titlelen = title.len;
@@ -122,6 +121,7 @@ pub fn update(
             pTodo.descriptionlen = description.len;
         }
     } else return false;
+
     return true;
 }
 
@@ -144,6 +144,7 @@ pub fn toJSON(self: *Self) ![]const u8 {
     }
     std.debug.assert(self.todos.count() == l.items.len);
     std.debug.assert(self.count == l.items.len);
+
     return std.json.stringifyAlloc(self.alloc, l.items, .{});
 }
 
@@ -162,10 +163,10 @@ const JsonTodoIteratorWithRaceCondition = struct {
 
     pub fn next(this: *This) ?Todo {
         if (this.it.next()) |pTodo| {
-            // we get a pointer to the internal user. so it should be safe to
-            // create slices from its first and last name buffers
+            // we get a pointer to the internal todo. so it should be safe to
+            // create slices from its title and description buffers
             var todo: Todo = .{
-                // we don't need .* syntax but want to make it obvious
+                // We don't need .* syntax but want to make it obvious
                 .id = pTodo.*.id,
                 .title = pTodo.*.titlebuf[0..pTodo.*.titlelen],
                 .description = pTodo.*.descriptionbuf[0..pTodo.*.descriptionlen],
@@ -176,6 +177,7 @@ const JsonTodoIteratorWithRaceCondition = struct {
             if (pTodo.*.descriptionlen == 0) {
                 todo.description = "";
             }
+
             return todo;
         }
         return null;

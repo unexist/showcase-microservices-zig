@@ -108,7 +108,7 @@ fn postTodo(e: *zap.Endpoint, r: zap.Request) void {
         if (maybe_todo) |t| {
             defer t.deinit();
 
-            if (self._todos.add(t.value.title, u.value.description)) |id| {
+            if (self._todos.add(t.value.title, t.value.description)) |id| {
                 var location = [_]u8{undefined} ** 100;
                 const locationvalue = std.fmt.bufPrint(&location, "/todos/{}", .{id}) catch return;
 
@@ -131,20 +131,23 @@ fn putTodo(e: *zap.Endpoint, r: zap.Request) void {
         if (self.todoIdFromPath(path)) |id| {
             if (self._todos.get(id)) |_| {
                 if (r.body) |body| {
-                    var maybe_todo: ?std.json.Parsed(Todo) = std.json.parseFromSlice(Todo, self.alloc, body, .{}) catch null;
+                    var maybe_todo: ?std.json.Parsed(Todo) = std.json.parseFromSlice(
+                        Todo, self.alloc, body, .{}) catch null;
 
-                    if (maybe_todo) |u| {
-                        defer u.deinit();
+                    if (maybe_todo) |t| {
+                        defer t.deinit();
 
-                        if (self._todos.update(id, u.value.title, u.value.description)) {
+                        if (self._todos.update(id, t.value.title, t.value.description)) {
                             var location = [_]u8{undefined} ** 100;
-                            const locationvalue = std.fmt.bufPrint(&location, "/todos/{}", .{id}) catch return;
+                            const locationvalue = std.fmt.bufPrint(&location,
+                                "/todos/{}", .{id}) catch return;
 
                             r.setStatusNumeric(204);
                             r.setHeader("Location", locationvalue) catch return;
                             r.sendBody("") catch return;
                         } else {
                             var jsonbuf: [128]u8 = undefined;
+
                             if (zap.stringifyBuf(&jsonbuf, .{ .status = "ERROR", .id = id }, .{})) |json| {
                                 r.sendJson(json) catch return;
                             }
