@@ -80,5 +80,5 @@ test-zap:
 	@$(SHELL) -c "cd todo-service-zig; zig test"
 
 # Helper
-clear:
+clean:
 	rm -rf todo-service-zig/zig-out/*
